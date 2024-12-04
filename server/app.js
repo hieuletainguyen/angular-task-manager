@@ -26,7 +26,8 @@ const createTableIfNotExists = async() => {
         id SERIAL PRIMARY KEY, 
         username VARCHAR(50) NOT NULL, 
         email VARCHAR(50) NOT NULL, 
-        password VARCHAR(150) NOT NULL
+        password VARCHAR(150) NOT NULL, 
+        permission VARCHAR(50) NOT NULL
       );
 
       CREATE TABLE IF NOT EXISTS tasks (
