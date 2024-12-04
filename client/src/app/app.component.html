@@ -1,8 +1,4 @@
-<div class="toolbar" style="background-color: #007bff; color: white; padding: 1rem; text-align: center;">
-  <span class="logo">🤖 RoboTask Manager</span>
-</div>
-
-<div class="container" style="padding: 1rem;">
-  <h2>Task List</h2>
-  <task-list></task-list>
+<div class="app-container">
+  <app-login *ngIf="!isLoggedIn" (loginSuccess)="onLoginSuccess()"></app-login>
+  <app-task-list *ngIf="isLoggedIn"></app-task-list>
 </div>

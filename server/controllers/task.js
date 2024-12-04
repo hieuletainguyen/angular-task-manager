@@ -1,6 +1,7 @@
 import db from "../database/postgresql-config";
 import configService from "../helper/config.service";
 import { decodeAndGetUser } from "../helper/helper";
+
 const jwtSecretKey = configService.get["JWT_SECRET_KEY"]
 
 export const addTask = async (req, res) => {
@@ -26,7 +27,6 @@ export const addTask = async (req, res) => {
 
 export const getTasks = async (req, res) => {
     const token = req.cookies?.TOKENS;
-    const { task } = req.body;
     
     if (!token) {
         return res.status(401).json({ message: "No token provided" });
@@ -69,7 +69,7 @@ export const getTask = async (req, res) => {
 export const modifyTask = async (req, res) => {
     const token = req.cookies?.TOKENS;
     const taskId  = req.params["id"];
-    const {task, isCompleted} = req.body;
+    const {isCompleted, priority, dueDate, description, title} = req.body;
     
     if (!token) {
         return res.status(401).json({ message: "No token provided" });
@@ -80,8 +80,11 @@ export const modifyTask = async (req, res) => {
     if (user.message !== "sucess") return res.status(400).json(user);
 
     const fieldsToUpdate = {}
-    if (task) fieldsToUpdate.task = task;
-    fieldsToUpdate.isCompleted = isCompleted;
+    if (title) fieldsToUpdate.title = title;
+    if (description) fieldsToUpdate.description = description;
+    if (isCompleted) fieldsToUpdate.isCompleted = isCompleted;
+    if (priority) fieldsToUpdate.priority = priority;
+    if (dueDate) fieldsToUpdate.dueDate = dueDate;
 
     const keys = Object.keys(fieldsToUpdate);
     const values = Object.values(fieldsToUpdate);
@@ -91,7 +94,7 @@ export const modifyTask = async (req, res) => {
 
     const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(', ');
 
-    db.pool.query(`UPDATE tasks SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`,
+    db.pool.query(`UPDATE tasks SET ${setClause} WHERE id = ${taskId} RETURNING *`,
         [...values, user.userId],
         (err, result) => {
             if (err) return res.status(500).json({ message: "Error during adding task. " + err.message});

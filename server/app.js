@@ -32,8 +32,11 @@ const createTableIfNotExists = async() => {
 
       CREATE TABLE IF NOT EXISTS tasks (
         id SERIAL PRIMARY KEY, 
-        task VARCHAR(150) NOT NULL, 
-        isCompleted BOOLEAN NOT NULL, 
+        title VARCHAR(150) NOT NULL, 
+        description VARCHAR(150) NOT NULL,
+        isCompleted BOOLEAN NOT NULL,
+        priority VARCHAR(50) NOT NULL,
+        dueDate DATE NOT NULL,
         userId INTEGER, 
         FOREIGN KEY (userId) REFERENCES account(id) ON DELETE CASCADE
       );

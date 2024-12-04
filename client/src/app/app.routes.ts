@@ -1,16 +1,15 @@
 import { Routes } from '@angular/router';
-import { TaskListComponent } from './task-list/task-list.component';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './components/login/login.component';
+import { TaskListComponent } from './components/task-list/task-list.component';
+import { AuthGuard } from './components/auth.guard';
 
 export const routes: Routes = [
-    {
-        path: '/',
-        component: LoginComponent,
-        title: "Login Page"
+    { path: '', redirectTo: '/login', pathMatch: 'full' },
+    { path: 'login', component: LoginComponent },
+    { 
+      path: 'tasks', 
+      component: TaskListComponent,
+      canActivate: [AuthGuard]  // This will protect the route
     },
-    {
-        path: '/tasks',
-        component: TaskListComponent,
-        title: "Task Page"
-    }
+    { path: '**', redirectTo: '/login' }    
 ];

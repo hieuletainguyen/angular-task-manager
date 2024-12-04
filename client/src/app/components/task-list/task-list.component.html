@@ -1,0 +1,77 @@
+<p>task-list works!</p>
+<div class="cyber-task-container">
+    <div class="cyber-header">
+      <h1>CYBER TASK MANAGER</h1>
+      <div class="cyber-line"></div>
+    </div>
+  
+    <!-- Add Task Form -->
+    <div class="cyber-form-container">
+      <form (ngSubmit)="addTask()" class="cyber-form">
+        <input 
+          type="text" 
+          [(ngModel)]="newTask.title" 
+          name="title"
+          placeholder="Task Title" 
+          class="cyber-input"
+          required>
+        
+        <textarea 
+          [(ngModel)]="newTask.description" 
+          name="description"
+          placeholder="Task Description" 
+          class="cyber-input"
+          rows="3"></textarea>
+        
+        <div class="form-row">
+          <select 
+            [(ngModel)]="newTask.priority" 
+            name="priority"
+            class="cyber-input">
+            <option value="low">Low Priority</option>
+            <option value="medium">Medium Priority</option>
+            <option value="high">High Priority</option>
+          </select>
+          
+          <input 
+            type="date" 
+            [(ngModel)]="newTask.dueDate" 
+            name="dueDate"
+            class="cyber-input">
+        </div>
+  
+        <button type="submit" class="cyber-button">Add Task</button>
+      </form>
+    </div>
+  
+    <!-- Task List -->
+    <div class="task-list">
+      <div *ngFor="let task of tasks" class="task-card" [class.completed]="task.isCompleted">
+        <div class="task-header">
+          <h3>{{ task.title }}</h3>
+          <span class="priority-badge" [class]="task.priority">
+            {{ task.priority }}
+          </span>
+        </div>
+        
+        <p class="task-description">{{ task.description }}</p>
+        
+        <div class="task-footer">
+          <span class="due-date">Due: {{ task.dueDate }}</span>
+          <div class="task-actions">
+            <button 
+              (click)="toggleComplete(task)" 
+              class="cyber-button small"
+              [class.completed]="task.isCompleted">
+              {{ task.isCompleted ? 'Completed' : 'Mark Complete' }}
+            </button>
+            <button 
+              (click)="deleteTask(task.id)" 
+              class="cyber-button small delete">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

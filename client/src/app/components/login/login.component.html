@@ -1,0 +1,51 @@
+<div class="cyber-container">
+    <div class="cyber-card">
+      <div class="card-header">
+        <h2 class="cyber-text">{{ isRegisterMode ? 'Register' : 'Login' }}</h2>
+        <div class="cyber-line"></div>
+      </div>
+      
+      <form (ngSubmit)="onSubmit()" class="cyber-form">
+        <div class="form-group">
+          <input 
+            type="text" 
+            [(ngModel)]="username" 
+            name="username" 
+            placeholder="Username"
+            class="cyber-input"
+            required>
+          <div class="input-border"></div>
+        </div>
+  
+        <div class="form-group">
+          <input 
+            type="password" 
+            [(ngModel)]="password" 
+            name="password" 
+            placeholder="Password"
+            class="cyber-input"
+            required>
+          <div class="input-border"></div>
+        </div>
+
+        <div *ngIf="isRegisterMode" class="form-group">
+          <input 
+            type="password"  
+            [(ngModel)]="retypedPassword" 
+            name="retypedPassword" 
+            placeholder="Retype Password"
+            class="cyber-input"
+            required>
+          <div class="input-border"></div>
+        </div >
+
+        <button type="submit" class="cyber-button">
+          {{ isRegisterMode ? 'Register' : 'Login' }}
+        </button>
+      </form>
+  
+      <button (click)="toggleMode()" class="cyber-button secondary">
+        {{ isRegisterMode ? 'Switch to Login' : 'Switch to Register' }}
+      </button>
+    </div>
+  </div>
