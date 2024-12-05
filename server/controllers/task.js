@@ -1,13 +1,14 @@
-import db from "../database/postgresql-config";
-import configService from "../helper/config.service";
-import { decodeAndGetUser } from "../helper/helper";
+import pool from "../database/postgresql-config.js";
+import configService from "../helper/config.service.js";
+import { decodeAndGetUser } from "../helper/helper.js";
 
 const jwtSecretKey = configService.get["JWT_SECRET_KEY"]
 
 export const addTask = async (req, res) => {
     const token = req.cookies?.TOKENS;
-    const { task } = req.body;
-    
+    const { title, description, priority, dueDate } = req.body;
+    const client = await pool.connect();
+
     if (!token) {
         return res.status(401).json({ message: "No token provided" });
     }
@@ -16,10 +17,14 @@ export const addTask = async (req, res) => {
 
     if (user.message !== "sucess") return res.status(400).json(user);
 
-    db.pool.query("INSERT INTO tasks (task, isCompleted, userId) VALUES ($1, $2, $3) RETURNING *",
-        [task, false, user.userId],
+    client.query("INSERT INTO tasks (title, description, priority, dueDate, isCompleted, userId) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+        [title, description, priority, dueDate, false, user.userId],
         (err, result) => {
-            if (err) return res.status(500).json({ message: "Error during adding task. " + err.message});
+            if (err) {
+                client.release();
+                return res.status(500).json({ message: "Error during adding task. " + err.message});
+            }
+            client.release();
             return res.json({ message: "success", result: result});
         }
     )
@@ -27,7 +32,8 @@ export const addTask = async (req, res) => {
 
 export const getTasks = async (req, res) => {
     const token = req.cookies?.TOKENS;
-    
+    const client = await pool.connect();
+
     if (!token) {
         return res.status(401).json({ message: "No token provided" });
     }
@@ -36,10 +42,14 @@ export const getTasks = async (req, res) => {
 
     if (user.message !== "sucess") return res.status(400).json(user);
 
-    db.pool.query("SELECT * FROM tasks WHERE userId = $1",
+    client.query("SELECT * FROM tasks WHERE userId = $1",
         [user.userId],
         (err, result) => {
-            if (err) return res.status(500).json({ message: "Error during adding task. " + err.message});
+            if (err) {
+                client.release();
+                return res.status(500).json({ message: "Error during adding task. " + err.message});
+            }
+            client.release();
             return res.json({ message: "success", result: result});
         }
     )
@@ -48,7 +58,8 @@ export const getTasks = async (req, res) => {
 export const getTask = async (req, res) => {
     const token = req.cookies?.TOKENS;
     const taskId  = req.params["id"];
-    
+    const client = await pool.connect();
+
     if (!token) {
         return res.status(401).json({ message: "No token provided" });
     }
@@ -57,10 +68,14 @@ export const getTask = async (req, res) => {
 
     if (user.message !== "sucess") return res.status(400).json(user);
 
-    db.pool.query("SELECT * FROM tasks WHERE userId = $1 AND id = $2",
+    client.query("SELECT * FROM tasks WHERE userId = $1 AND id = $2",
         [user.userId, taskId],
         (err, result) => {
-            if (err) return res.status(500).json({ message: "Error during adding task. " + err.message});
+            if (err) {
+                client.release();
+                return res.status(500).json({ message: "Error during adding task. " + err.message});
+            }
+            client.release();
             return res.json({ message: "success", result: result});
         }
     )
@@ -70,7 +85,8 @@ export const modifyTask = async (req, res) => {
     const token = req.cookies?.TOKENS;
     const taskId  = req.params["id"];
     const {isCompleted, priority, dueDate, description, title} = req.body;
-    
+    const client = await pool.connect();
+
     if (!token) {
         return res.status(401).json({ message: "No token provided" });
     }
@@ -94,10 +110,14 @@ export const modifyTask = async (req, res) => {
 
     const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(', ');
 
-    db.pool.query(`UPDATE tasks SET ${setClause} WHERE id = ${taskId} RETURNING *`,
+    client.query(`UPDATE tasks SET ${setClause} WHERE id = ${taskId} RETURNING *`,
         [...values, user.userId],
         (err, result) => {
-            if (err) return res.status(500).json({ message: "Error during adding task. " + err.message});
+            if (err) {
+                client.release();
+                return res.status(500).json({ message: "Error during adding task. " + err.message});
+            }
+            client.release();
             return res.json({ message: "success", result: result});
         }
     )
@@ -106,7 +126,8 @@ export const modifyTask = async (req, res) => {
 export const deleteTask = async (req, res) => {
     const token = req.cookies?.TOKENS;
     const taskId  = req.params["id"];
-    
+    const client = await pool.connect();
+
     if (!token) {
         return res.status(401).json({ message: "No token provided" });
     }
@@ -115,10 +136,14 @@ export const deleteTask = async (req, res) => {
 
     if (user.message !== "sucess") return res.status(400).json(user);
 
-    db.pool.query("DELETE FROM tasks WHERE userId = $1 AND id = $2 RETURNING *",
+    client.query("DELETE FROM tasks WHERE userId = $1 AND id = $2 RETURNING *",
         [user.userId, taskId],
         (err, result) => {
-            if (err) return res.status(500).json({ message: "Error during adding task. " + err.message});
+            if (err) {
+                client.release();
+                return res.status(500).json({ message: "Error during adding task. " + err.message});
+            }
+            client.release();
             return res.json({ message: "success", result: result});
         }
     )

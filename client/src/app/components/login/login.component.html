@@ -6,7 +6,19 @@
       </div>
       
       <form (ngSubmit)="onSubmit()" class="cyber-form">
+
         <div class="form-group">
+          <input 
+            type="text" 
+            [(ngModel)]="email" 
+            name="email" 
+            placeholder="Email"
+            class="cyber-input"
+            required>
+          <div class="input-border"></div>
+        </div>
+
+        <div *ngIf="isRegisterMode" class="form-group">
           <input 
             type="text" 
             [(ngModel)]="username" 

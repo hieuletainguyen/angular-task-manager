@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as tasks from "../controllers/task";
+import * as tasks from "../controllers/task.js";
 
 const router = Router();
 
@@ -22,3 +22,5 @@ router.put("/tasks/modify-task/:id",
 router.delete("/tasks/delete-task/:id",
     tasks.deleteTask
 )
+
+export default router;

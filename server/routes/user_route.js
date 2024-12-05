@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as user from "../controllers/user"
+import * as user from "../controllers/user.js"
 import { body } from "express-validator"
 
 const router = Router();
@@ -25,7 +25,7 @@ router.put("/user/account",
     user.modifyAccount
 )
 
-router.post("/user/decode-token", 
+router.get("/user/decode-token", 
     user.decodeToken
 );
 

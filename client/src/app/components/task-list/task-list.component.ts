@@ -31,34 +31,33 @@ export class TaskListComponent implements OnInit {
     this.loadTasks();
   }
 
-  loadTasks() {
+  async loadTasks() {
     // fetch
-    this.taskService.getTasks().then(tasks => {
-      this.tasks = tasks;
-    });
+    const result = await this.taskService.getTasks();
+    console.log(result);
+    if (result.message === "success") {
+      this.tasks = result.result;
+    }
   }
 
-  addTask() {
+  async addTask() {
     // fetch
-    this.taskService.addTask(this.newTask).then(() => {
-      this.loadTasks();
-      this.resetNewTask();
-    });
+    await this.taskService.addTask(this.newTask);
+    this.loadTasks();
+    this.resetNewTask();
   }
 
-  toggleComplete(task: Task) {
+  async toggleComplete(task: Task) {
     task.isCompleted = !task.isCompleted;
     // fetch
-    this.taskService.updateTask(task).then(() => {
-      this.loadTasks();
-    });
+    await this.taskService.updateTask(task);
+    this.loadTasks();
   }
 
-  deleteTask(id: number) {
+  async deleteTask(id: number) {
     // fetch 
-    this.taskService.deleteTask(id).then(() => {
-      this.loadTasks();
-    });
+    await this.taskService.deleteTask(id);
+    this.loadTasks();
   }
 
   private resetNewTask() {

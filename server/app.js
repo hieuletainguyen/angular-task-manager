@@ -3,7 +3,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import express from "express";
 import pool from "./database/postgresql-config.js";
-
+import task_route from "./routes/task_route.js";
+import user_route from "./routes/user_route.js";
 const app = express();
 const port = 9897;
 
@@ -13,9 +14,12 @@ var corsOptions = {
   optionsSuccessStatus: 204
 }
 
+
 app.use(express.json())
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use(task_route);
+app.use(user_route);
 
 const createTableIfNotExists = async() => {
   const client = await pool.connect();
