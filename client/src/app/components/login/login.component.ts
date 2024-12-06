@@ -33,7 +33,6 @@ export class LoginComponent {
 
   async onSubmit() {
     if (this.isRegisterMode) {
-      // fetch - register
       if (this.password !== this.retypedPassword) {
         alert('Passwords do not match');
         return;
@@ -50,7 +49,6 @@ export class LoginComponent {
       }
       console.log('Register:', result);
     } else {
-      // fetch - login
       const result: { message: string } = await this.userService.login(this.email, this.password);
       console.log('Login:', result);
       if (result.message === 'success') {
