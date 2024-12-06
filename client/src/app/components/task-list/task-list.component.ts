@@ -34,7 +34,7 @@ export class TaskListComponent implements OnInit {
   async loadTasks() {
     // fetch
     const result = await this.taskService.getTasks();
-    console.log(result);
+    console.log("result of getTasks: ", result);
     if (result.message === "success") {
       this.tasks = result.result;
     }

@@ -23,7 +23,7 @@ export const registerUser = async (req, res) => {
             client.release();
             return res.json({message: "Error during searching " + err.message})
         }
-        if (result.length > 0) {
+        if (result.rows.length > 0) {
             client.release();
             return res.json({ message: "The email is already registered!"})
         }
@@ -41,7 +41,7 @@ export const registerUser = async (req, res) => {
                 return res.json({message: "Error during adding " + err.message})
             }
             client.release();
-            return res.status(200).json({ message: "success", result: result})
+            return res.status(200).json({ message: "success", result: result.rows})
         }
     )
 }
@@ -55,7 +55,7 @@ export const login = async (req, res) => {
             client.release();
             return res.json({message: "Error during searching " + err.message})
         }
-        if (result.length === 0) {
+        if (result.rows.length === 0) {
             client.release();
             return res.json({ message: "You need to register first!"});
         }
@@ -121,13 +121,13 @@ export const getAccounts = async (req, res) => {
         return res.status(401).json({ message: "You are not authorized"})
     }
 
-    client.query("SELECT * FROM account", (err, result) => {
+    client.query("SELECT * FROM account;", (err, result) => {
         if (err) {
             client.release();
             return res.status(500).json({ message: "Error: " + err.message});
         }
         client.release();
-        return res.json({ message: "success", result: result})
+        return res.json({ message: "success", result: result.rows})
     })
 }
 
@@ -161,7 +161,7 @@ export const modifyAccount = async (req, res) => {
     const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(', ');
     const values = Object.values(fieldsToUpdate);
 
-    const query = `UPDATE account SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`;
+    const query = `UPDATE account SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *;`;
 
     client.query(query, [...values, user.userId], (err, result) => {
         if (err) {
@@ -169,7 +169,7 @@ export const modifyAccount = async (req, res) => {
             return res.status(500).json({ message: "Error while updating info. " + err.message });
         }
         client.release();
-        return res.json({ message: "success", result: result });
+        return res.json({ message: "success", result: result.rows });
     })
 }
 
@@ -196,7 +196,7 @@ export const deleteUser = async (req, res) => {
     }
 
     const placeholder = accounts.map((_, index) => `$${index+1}`).join(',');
-    const query = `DELETE FROM users WHERE id IN (${placeholder}) RETURNING *`;
+    const query = `DELETE FROM users WHERE id IN (${placeholder}) RETURNING *;`;
 
     client.query(query, accounts, async (err, result) => {
         if (err) {
@@ -204,6 +204,6 @@ export const deleteUser = async (req, res) => {
             return res.status(500).json({ message: "Error while deleting info. " + err.message });
         }
         client.release();
-        return res.json({ message: "success", result: result });
+        return res.json({ message: "success", result: result.rows });
     })
 }

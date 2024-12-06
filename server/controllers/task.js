@@ -25,7 +25,7 @@ export const addTask = async (req, res) => {
                 return res.status(500).json({ message: "Error during adding task. " + err.message});
             }
             client.release();
-            return res.json({ message: "success", result: result});
+            return res.json({ message: "success", result: result.rows});
         }
     )
 }
@@ -37,20 +37,22 @@ export const getTasks = async (req, res) => {
     if (!token) {
         return res.status(401).json({ message: "No token provided" });
     }
-
+    
     const user = decodeAndGetUser(token);
+    console.log("user of get tasks: ", user);
 
     if (user.message !== "sucess") return res.status(400).json(user);
 
-    client.query("SELECT * FROM tasks WHERE userId = $1",
+    const result = client.query("SELECT * FROM tasks WHERE userId = $1;",
         [user.userId],
         (err, result) => {
             if (err) {
                 client.release();
                 return res.status(500).json({ message: "Error during adding task. " + err.message});
             }
+            console.log(result)
             client.release();
-            return res.json({ message: "success", result: result});
+            return res.json({ message: "success", result: result.rows});
         }
     )
 }
@@ -68,7 +70,7 @@ export const getTask = async (req, res) => {
 
     if (user.message !== "sucess") return res.status(400).json(user);
 
-    client.query("SELECT * FROM tasks WHERE userId = $1 AND id = $2",
+    client.query("SELECT * FROM tasks WHERE userId = $1 AND id = $2;",
         [user.userId, taskId],
         (err, result) => {
             if (err) {
@@ -76,7 +78,7 @@ export const getTask = async (req, res) => {
                 return res.status(500).json({ message: "Error during adding task. " + err.message});
             }
             client.release();
-            return res.json({ message: "success", result: result});
+            return res.json({ message: "success", result: result.rows});
         }
     )
 }
@@ -110,7 +112,7 @@ export const modifyTask = async (req, res) => {
 
     const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(', ');
 
-    client.query(`UPDATE tasks SET ${setClause} WHERE id = ${taskId} RETURNING *`,
+    client.query(`UPDATE tasks SET ${setClause} WHERE id = ${taskId} RETURNING *;`,
         [...values, user.userId],
         (err, result) => {
             if (err) {
@@ -118,7 +120,7 @@ export const modifyTask = async (req, res) => {
                 return res.status(500).json({ message: "Error during adding task. " + err.message});
             }
             client.release();
-            return res.json({ message: "success", result: result});
+            return res.json({ message: "success", result: result.rows});
         }
     )
 }
@@ -136,7 +138,7 @@ export const deleteTask = async (req, res) => {
 
     if (user.message !== "sucess") return res.status(400).json(user);
 
-    client.query("DELETE FROM tasks WHERE userId = $1 AND id = $2 RETURNING *",
+    client.query("DELETE FROM tasks WHERE userId = $1 AND id = $2 RETURNING *;",
         [user.userId, taskId],
         (err, result) => {
             if (err) {
@@ -144,7 +146,7 @@ export const deleteTask = async (req, res) => {
                 return res.status(500).json({ message: "Error during adding task. " + err.message});
             }
             client.release();
-            return res.json({ message: "success", result: result});
+            return res.json({ message: "success", result: result.rows});
         }
     )
 }
