@@ -34,6 +34,10 @@ export const getTasks = async (req, res) => {
     const token = req.cookies?.TOKENS;
     const client = await pool.connect();
 
+    if (!client) {
+        return res.status(500).json({ message: "Database connection is not established." });
+    }
+
     if (!token) {
         return res.status(401).json({ message: "No token provided" });
     }
@@ -59,6 +63,10 @@ export const getTask = async (req, res) => {
     const token = req.cookies?.TOKENS;
     const taskId  = req.params["id"];
     const client = await pool.connect();
+
+    if (!client) {
+        return res.status(500).json({ message: "Database connection is not established." });
+    }
 
     if (!token) {
         return res.status(401).json({ message: "No token provided" });
@@ -87,6 +95,10 @@ export const modifyTask = async (req, res) => {
     const {isCompleted, priority, dueDate, description, title} = req.body;
     console.log(req.body)
     const client = await pool.connect();
+
+    if (!client) {
+        return res.status(500).json({ message: "Database connection is not established." });
+    }
 
     if (!token) {
         return res.status(401).json({ message: "No token provided" });
@@ -130,6 +142,10 @@ export const deleteTask = async (req, res) => {
     const taskId  = req.params["id"];
     console.log("task id: ", taskId);
     const client = await pool.connect();
+
+    if (!client) {
+        return res.status(500).json({ message: "Database connection is not established." });
+    }
 
     if (!token) {
         return res.status(401).json({ message: "No token provided" });

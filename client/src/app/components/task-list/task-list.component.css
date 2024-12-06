@@ -1,15 +1,21 @@
 .cyber-task-container {
   padding: 2rem;
   background: linear-gradient(45deg, #0a0a0a, #1a1a2e);
-  min-height: 100vh;
-  color: #00f2ff;
-  border: 2px solid #00f2ff;
-  
+  min-height: 50vh;
+  color: #00f2ff;  
 }
   
 .cyber-header {
   text-align: center;
   margin-bottom: 2rem;
+  border: 2px white;
+  position: relative; /* Allow the logout button to position relative to this container */
+}
+
+.cyber-header h1 {
+  margin: 0;
+  position: relative; /* For layering with the button */
+  z-index: 1; /* Ensure the heading stays above the button */
 }
   
 .cyber-header h1 {
@@ -106,16 +112,19 @@
 .cyber-button.small {
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
+  border-radius: 5px;
 }
 
 .cyber-button.delete {
   border-color: #ff0000;
   color: #ff0000;
+  border-radius: 5px;
 }
 
 .cyber-button.delete:hover {
   background: #ff0000;
   color: #000;
+
 }
 
 @keyframes scan {
@@ -160,4 +169,25 @@
 .due-date {
   color: #00f2ff;
   font-size: 0.9rem;
+}
+
+
+.logout-button {
+  position: absolute; /* Ensure it doesn't follow normal flow */
+  top: 10px; /* Adjust the vertical alignment */
+  right: 20px; /* Push it to the right corner */
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #ff0000; /* Red background */
+  border: 2px solid #ff0000; /* Match the background */
+  border-radius: 10px; /* Rounded corners */
+  cursor: pointer;
+  transition: all 0.3s ease; /* Smooth transition */
+}
+
+.logout-button:hover {
+  background-color: #ff4d4d; /* Lighter red on hover */
+  transform: scale(1.05); /* Slightly larger */
+  cursor: pointer;
 }

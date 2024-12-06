@@ -1,5 +1,6 @@
 <p>task-list works!</p>
 <div class="cyber-task-container">
+  <button (click)="logout()" class="logout-button">Logout</button>
     <div class="cyber-header">
       <h1>CYBER TASK MANAGER</h1>
       <div class="cyber-line"></div>
@@ -27,6 +28,7 @@
           <select 
             [(ngModel)]="newTask.priority" 
             name="priority"
+            id="firstSelect"
             class="cyber-input">
             <option value="low">Low Priority</option>
             <option value="medium">Medium Priority</option>
@@ -65,8 +67,7 @@
           </ng-container>
           <ng-template #editPriorityMode>
             <select 
-              [(ngModel)]="newTask.priority" 
-              name="priority"
+              [(ngModel)]="task.priority" 
               class="cyber-input">
               <option value="low">Low Priority</option>
               <option value="medium">Medium Priority</option>
@@ -75,16 +76,45 @@
           </ng-template>
         </div>
         
-        <p class="task-description">{{ task.description }}</p>
+        <div>
+          <ng-container *ngIf="!task.isEditing; else editDescription">
+            <p class="task-description">{{ task.description }}</p>
+          </ng-container>
+          <ng-template #editDescription>
+            <textarea 
+              [(ngModel)]="task.description" 
+              class="cyber-input"
+              rows="2">
+            </textarea>
+          </ng-template>
+        </div>
 
         <div class="task-footer">
-          <span class="due-date">Due: {{ task.dueDate }}</span>
+          <ng-container *ngIf="!task.isEditing; else editDate">
+            <span class="due-date">Due: {{ task.dueDate }}</span>
+          </ng-container>
+          <ng-template #editDate>
+            <input 
+            type="date" 
+            [(ngModel)]="task.dueDate" 
+            class="cyber-input"
+            [value]="(task.dueDate | date:'yyyy-MM-dd')" 
+            >
+          </ng-template>
           <div class="task-actions">
             <button 
               (click)="toggleEditMode(task)"
               class="cyber-button small">
             {{ task.isEditing ? 'Save' : 'Edit' }}
-          </button>
+            </button>
+
+            <button 
+              *ngIf="task.isEditing"
+              (click)="toggleEditModeCancel(task)"
+              class="cyber-button small">
+            Cancel 
+            </button>
+
             <button 
               (click)="toggleComplete(task)" 
               class="cyber-button small"

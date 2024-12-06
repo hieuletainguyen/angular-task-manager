@@ -1,6 +1,5 @@
 .cyber-nav {
     background: rgba(16, 16, 28, 0.9);
-    border-bottom: 2px solid #00f2ff;
     padding: 1rem 2rem;
     position: fixed;
     top: 0;
@@ -31,5 +30,5 @@
   .app-container {
     min-height: 100vh;
     background: linear-gradient(45deg, #0a0a0a, #1a1a2e);
-    padding-top: 70px; /* Add space for fixed nav */
+    padding-top: 30px; /* Add space for fixed nav */
   }

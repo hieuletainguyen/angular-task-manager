@@ -38,9 +38,13 @@ export class LoginComponent {
         alert('Passwords do not match');
         return;
       }
+      if (!this.email || !this.password || !this.username){
+        alert('You must enter all the information');
+        return;
+      }
       const result: { message: string } = await this.userService.register(this.username, this.email, this.password);
       if (result.message === 'success') {
-        this.router.navigate(['/login']);
+        window.location.reload();
       } else {
         alert(result.message);
       }

@@ -3,6 +3,8 @@ import { Task } from '../../models/task.model';
 import { TaskService } from '../../services/task.services';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { UserService } from '../../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-task-list',
@@ -23,8 +25,9 @@ export class TaskListComponent implements OnInit {
     priority: 'low',
     dueDate: new Date()
   };
+  
 
-  constructor(private taskService: TaskService) {}
+  constructor(private router: Router,private taskService: TaskService, private userService: UserService) {}
 
   ngOnInit() {
     this.loadTasks();
@@ -73,6 +76,18 @@ export class TaskListComponent implements OnInit {
       }
     }
     task.isEditing = !task.isEditing; // Toggle edit mode
+  }
+
+  async toggleEditModeCancel(task: Task) {
+    task.isEditing = !task.isEditing;
+  }
+
+  async logout() {
+    const result = await this.userService.logout();
+    console.log(result)
+    if (result.message === "success") {
+      this.router.navigate(['/']);
+    }
   }
 
   private resetNewTask() {

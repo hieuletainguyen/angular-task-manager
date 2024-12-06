@@ -37,6 +37,7 @@ export class UserService {
   async logout(): Promise<{ message: string }> {
     const data = await fetch(this.apiUrl + "/user/logout", {
       credentials: 'include',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       }
