@@ -13,11 +13,14 @@ export const decodeAndGetUser = async (token) => {
             }
             return { message: "Invalid Token" };
         }
-        const userDetail = client.query("SELECT * FROM account WHERE id = $1;", [decoded.userId]);
-        console.log(userDetail);
-        return {message: "success", result: userDetail}
-        
+        return {message: "success", result: decoded};
     })
-    console.log("result after verif: ", user)
-    return user;
+
+    if (user.message === 'success') {
+        const userDetail = await client.query("SELECT * FROM account WHERE id = $1;", [user.result.userId]);
+        return {message: "success", result: userDetail.rows}
+
+    } else {
+        return user
+    }
 }

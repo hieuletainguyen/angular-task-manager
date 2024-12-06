@@ -112,12 +112,12 @@ export const getAccounts = async (req, res) => {
         return res.status(401).json({ message: "No token provided" });
     }
 
-    const user = decodeAndGetUser(token);
+    const user = await decodeAndGetUser(token);
 
-    if (user.message !== "sucess") return res.status(400).json(user);
+    if (user.message !== "success") return res.status(400).json(user);
 
     console.log("user: ", user);
-    if (user.permission !== "admin") {
+    if (user.result.permission !== "admin") {
         return res.status(401).json({ message: "You are not authorized"})
     }
 
@@ -144,9 +144,9 @@ export const modifyAccount = async (req, res) => {
         return res.status(401).json({ message: "No token provided" });
     }
 
-    const user = decodeAndGetUser(token);
+    const user = await decodeAndGetUser(token);
 
-    if (user.message !== "sucess") return res.status(400).json(user);
+    if (user.message !== "success") return res.status(400).json(user);
 
     const fieldsToUpdate = {};
     if (username) fieldsToUpdate.username = username;
@@ -158,12 +158,12 @@ export const modifyAccount = async (req, res) => {
         return res.status(400).send('No valid fields to update');
     }
 
-    const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(', ');
+    const setClause = keys.map((key, index) => `"${key}" = $${index + 1}`).join(', ');
     const values = Object.values(fieldsToUpdate);
 
     const query = `UPDATE account SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *;`;
 
-    client.query(query, [...values, user.userId], (err, result) => {
+    client.query(query, [...values, user.result.userId], (err, result) => {
         if (err) {
             client.release();
             return res.status(500).json({ message: "Error while updating info. " + err.message });
@@ -186,12 +186,11 @@ export const deleteUser = async (req, res) => {
         return res.status(401).json({ message: "No token provided" });
     }
 
-    const user = decodeAndGetUser(token);
+    const user = await decodeAndGetUser(token);
 
-    if (user.message !== "sucess") return res.status(400).json(user);
+    if (user.message !== "success") return res.status(400).json(user);
 
-    console.log("user: ", user);
-    if (user.permission !== "admin") {
+    if (user.result.permission !== "admin") {
         return res.status(401).json({ message: "You are not authorized"})
     }
 

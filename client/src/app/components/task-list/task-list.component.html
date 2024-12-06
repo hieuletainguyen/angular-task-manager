@@ -40,7 +40,7 @@
             class="cyber-input">
         </div>
   
-        <button type="submit" class="cyber-button-submit">Add Task</button>
+        <button type="submit" class="cyber-button-submit" >Add Task</button>
       </form>
     </div>
   
@@ -48,17 +48,43 @@
     <div class="task-list">
       <div *ngFor="let task of tasks" class="task-card" [class.completed]="task.isCompleted">
         <div class="task-header">
-          <h3>{{ task.title }}</h3>
-          <span class="priority-badge" [class]="task.priority">
-            {{ task.priority }}
-          </span>
+          <ng-container *ngIf="!task.isEditing; else editTitleMode">
+            <h3>{{ task.title }}</h3>
+          </ng-container>
+          <ng-template #editTitleMode>
+            <input 
+              type="text" 
+              [(ngModel)]="task.title" 
+              class="cyber-input"
+              placeholder="Task Title">
+          </ng-template>
+          <ng-container *ngIf="!task.isEditing; else editPriorityMode">
+            <span class="priority-badge" [class]="task.priority">
+              {{ task.priority }}
+            </span>
+          </ng-container>
+          <ng-template #editPriorityMode>
+            <select 
+              [(ngModel)]="newTask.priority" 
+              name="priority"
+              class="cyber-input">
+              <option value="low">Low Priority</option>
+              <option value="medium">Medium Priority</option>
+              <option value="high">High Priority</option>
+            </select>
+          </ng-template>
         </div>
         
         <p class="task-description">{{ task.description }}</p>
-        
+
         <div class="task-footer">
           <span class="due-date">Due: {{ task.dueDate }}</span>
           <div class="task-actions">
+            <button 
+              (click)="toggleEditMode(task)"
+              class="cyber-button small">
+            {{ task.isEditing ? 'Save' : 'Edit' }}
+          </button>
             <button 
               (click)="toggleComplete(task)" 
               class="cyber-button small"
@@ -66,7 +92,8 @@
               {{ task.isCompleted ? 'Completed' : 'Mark Complete' }}
             </button>
             <button 
-              (click)="deleteTask(task.id)" 
+              *ngIf="task.id" 
+              (click)="deleteTask(task.id!)" 
               class="cyber-button small delete">
               Delete
             </button>

@@ -17,7 +17,6 @@ import { FormsModule } from '@angular/forms';
 export class TaskListComponent implements OnInit {
   tasks: Task[] = [];
   newTask: Task = {
-    id: 0,
     title: '',
     description: '',
     isCompleted: false,
@@ -42,7 +41,9 @@ export class TaskListComponent implements OnInit {
 
   async addTask() {
     // fetch
-    await this.taskService.addTask(this.newTask);
+    console.log("This is new task: ",this.newTask);
+    const result = await this.taskService.addTask(this.newTask);
+    console.log(result);
     this.loadTasks();
     this.resetNewTask();
   }
@@ -50,19 +51,32 @@ export class TaskListComponent implements OnInit {
   async toggleComplete(task: Task) {
     task.isCompleted = !task.isCompleted;
     // fetch
-    await this.taskService.updateTask(task);
+    const result = await this.taskService.updateTask(task);
+    console.log("result of toggle complete: ", result)
     this.loadTasks();
   }
 
   async deleteTask(id: number) {
     // fetch 
-    await this.taskService.deleteTask(id);
+    console.log("task id: ", id);
+    const result = await this.taskService.deleteTask(id);
+    console.log("result of delete task: ", result)
     this.loadTasks();
+  }
+
+  async toggleEditMode(task: Task) {
+    if (task.isEditing) {
+      // Save updated task to the server
+      const result = await this.taskService.updateTask(task);
+      if (result.message === 'success') {
+        this.loadTasks();
+      }
+    }
+    task.isEditing = !task.isEditing; // Toggle edit mode
   }
 
   private resetNewTask() {
     this.newTask = {
-      id: 0,
       title: '',
       description: '',
       isCompleted: false,
