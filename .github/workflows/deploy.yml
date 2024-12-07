@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 22
 
       # Install dependencies and build frontend
       - name: Install and build client
@@ -51,4 +51,3 @@ jobs:
           DB_PORT: ${{ secrets.DB_PORT }}
           NODE_ENV: ${{ secrets.NODE_ENV }}
           PROD_FRONTEND_URL: ${{ secrets.PROD_FRONTEND_URL }}
-          
