@@ -30,15 +30,12 @@ jobs:
       # Deploy frontend to Vercel
       - name: Deploy frontend to Vercel
         working-directory: client/dist
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: vercel --prod --cwd . --yes
+        run: vercel --prod --cwd . --yes --token=${{ secrets.VERCEL_TOKEN }}
 
       # Install dependencies and deploy backend
       - name: Install and deploy server
         working-directory: server
         env:
-            VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
             JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
             SALT_ROUNDS: ${{ secrets.SALT_ROUNDS }}
             DB_USER: ${{ secrets.DB_USER }}
@@ -50,5 +47,5 @@ jobs:
             PROD_FRONTEND_URL: ${{ secrets.PROD_FRONTEND_URL }}
         run: |
             npm install
-            vercel deploy --prod --cwd . --yes
+            vercel deploy --prod --cwd . --yes --token=${{ secrets.VERCEL_TOKEN }}
     
