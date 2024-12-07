@@ -11,7 +11,7 @@ router.post("/user/register-user",
     user.registerUser
 )
 
-router.post("/user/auth", 
+router.post("/user/auth",  
     body('email').not().isEmpty().escape(),
     body('password').not().isEmpty().escape(),
     user.login
