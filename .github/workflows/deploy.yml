@@ -1,5 +1,4 @@
 name: CI/CD Pipeline
-
 on:
   push:
     branches:
@@ -28,23 +27,23 @@ jobs:
           npm run build
 
       # Deploy frontend to Vercel
-      - name: Deploy frontend to Vercel
-        run: vercel --prod --cwd . --yes --token=${{ secrets.VERCEL_TOKEN }}
+    #   - name: Deploy frontend to Vercel
+    #     run: vercel --prod --cwd . --yes --token=${{ secrets.VERCEL_TOKEN }}
 
       # Install dependencies and deploy backend
-      - name: Install and deploy server
-        working-directory: server
-        env:
-            JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-            SALT_ROUNDS: ${{ secrets.SALT_ROUNDS }}
-            DB_USER: ${{ secrets.DB_USER }}
-            DB_HOST: ${{ secrets.DB_HOST }}
-            DB_DATABASE: ${{ secrets.DB_DATABASE }}
-            DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-            DB_PORT: ${{ secrets.DB_PORT }}
-            NODE_ENV: ${{ secrets.NODE_ENV }}
-            PROD_FRONTEND_URL: ${{ secrets.PROD_FRONTEND_URL }}
-        run: |
-            npm install
-            vercel deploy --prod --cwd . --yes --token=${{ secrets.VERCEL_TOKEN }}
+    #   - name: Install and deploy server
+    #     working-directory: server
+    #     env:
+    #         JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+    #         SALT_ROUNDS: ${{ secrets.SALT_ROUNDS }}
+    #         DB_USER: ${{ secrets.DB_USER }}
+    #         DB_HOST: ${{ secrets.DB_HOST }}
+    #         DB_DATABASE: ${{ secrets.DB_DATABASE }}
+    #         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    #         DB_PORT: ${{ secrets.DB_PORT }}
+    #         NODE_ENV: ${{ secrets.NODE_ENV }}
+    #         PROD_FRONTEND_URL: ${{ secrets.PROD_FRONTEND_URL }}
+    #     run: |
+    #         npm install
+    #         vercel deploy --prod --cwd . --yes --token=${{ secrets.VERCEL_TOKEN }}
     
