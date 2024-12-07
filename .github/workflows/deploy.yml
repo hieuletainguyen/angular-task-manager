@@ -29,7 +29,6 @@ jobs:
 
       # Deploy frontend to Vercel
       - name: Deploy frontend to Vercel
-        working-directory: client/dist/client
         run: vercel --prod --cwd . --yes --token=${{ secrets.VERCEL_TOKEN }}
 
       # Install dependencies and deploy backend

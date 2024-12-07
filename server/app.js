@@ -13,7 +13,7 @@ const port = 9897;
 var corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
   ? process.env.PROD_FRONTEND_URL 
-  : process.env.FRONTEND_URL,
+  : process.env.FRONTEND_URL || "*",
   credentials: true,
   optionsSuccessStatus: 204
 }
