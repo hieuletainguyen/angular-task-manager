@@ -5,15 +5,16 @@ import express from "express";
 import pool from "./database/postgresql-config.js";
 import task_route from "./routes/task_route.js";
 import user_route from "./routes/user_route.js";
-import configService from "../helper/config.service.js";
+import configService from "./helper/config.service.js";
 
 const app = express();
 const port = 9897;
 
 var corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-  ? process.env.PROD_FRONTEND_URL 
-  : process.env.FRONTEND_URL || "*",
+  // origin: process.env.NODE_ENV === 'production' 
+  // ? process.env.PROD_FRONTEND_URL 
+  // : process.env.FRONTEND_URL || "*",
+  origin: "*",
   credentials: true,
   optionsSuccessStatus: 204
 }
@@ -27,6 +28,9 @@ app.use(user_route);
 
 const createTableIfNotExists = async() => {
   const client = await pool.connect();
+  if (!client) {
+    console.log("not connecting to the cloud database")
+  }
 
   try {
     const query = `
