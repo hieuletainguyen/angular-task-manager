@@ -5,11 +5,15 @@ import express from "express";
 import pool from "./database/postgresql-config.js";
 import task_route from "./routes/task_route.js";
 import user_route from "./routes/user_route.js";
+import configService from "../helper/config.service.js";
+
 const app = express();
 const port = 9897;
 
 var corsOptions = {
-  origin: ['http://localhost:4200', 'http://127.0.0.1:4200'],
+  origin: process.env.NODE_ENV === 'production' 
+  ? process.env.PROD_FRONTEND_URL 
+  : process.env.FRONTEND_URL,
   credentials: true,
   optionsSuccessStatus: 204
 }

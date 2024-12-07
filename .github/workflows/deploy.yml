@@ -1,0 +1,54 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # Install dependencies and build frontend
+      - name: Install and build client
+        working-directory: client
+        run: |
+          npm install
+          npm run build
+
+      # Deploy frontend to Vercel
+      - name: Deploy frontend to Vercel
+        working-directory: client/dist
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: vercel --prod --cwd .
+
+      # Install dependencies and deploy backend
+      - name: Install and deploy server
+        working-directory: server
+        run: |
+          npm install
+          vercel --prod --cwd .
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          SALT_ROUNDS: ${{ secrets.SALT_ROUNDS }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_HOST: ${{ secrets. DB_HOST }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}
+          PROD_FRONTEND_URL: ${{ secrets.PROD_FRONTEND_URL }}
+          
