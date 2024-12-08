@@ -1,4 +1,4 @@
+import configService from "../helper/configService"
 export const environment = {
-    production: false,
-    backendUrl: "http://localhost:9897"
+    backendUrl: 
 };
