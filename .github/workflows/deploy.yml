@@ -4,27 +4,27 @@ on:
     branches:
       - main
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
 
-    steps:
-      # Checkout code
-      - name: Checkout repository
-        uses: actions/checkout@v3
+#     steps:
+#       # Checkout code
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
 
-      # Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 22
+#       # Setup Node.js
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 22
 
-      # Install dependencies and build frontend
-      - name: Install and build client
-        working-directory: client
-        run: |
-          npm install
-          npm run build
+#       # Install dependencies and build frontend
+#       - name: Install and build client
+#         working-directory: client
+#         run: |
+#           npm install
+#           npm run build
 
       # Deploy frontend to Vercel
     #   - name: Deploy frontend to Vercel
