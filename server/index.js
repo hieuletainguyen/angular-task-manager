@@ -72,6 +72,6 @@ createTableIfNotExists().then(() => {
 app.get('/', (req, res) => {
   res.status(200).json('The server is working well');
 })
-
+ 
 
 export default app;
