@@ -1,4 +1,3 @@
 export const environment = {
-    backendUrl: '',
+    backendUrl: 'https://angular-task-manager-server.vercel.app/'
 };
- 
