@@ -22,6 +22,7 @@ var corsOptions = {
 
 app.use(express.json())
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions))
 app.use(cookieParser());
 app.use(task_route);
 app.use(user_route);
