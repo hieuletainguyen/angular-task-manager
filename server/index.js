@@ -11,10 +11,10 @@ const app = express();
 const port = 9897;
 
 var corsOptions = {
-  // origin: process.env.NODE_ENV === 'production' 
-  // ? process.env.PROD_FRONTEND_URL 
-  // : process.env.FRONTEND_URL || "*",
-  origin: "*",
+  origin: process.env.NODE_ENV === 'production' 
+   ? process.env.PROD_FRONTEND_URL 
+   : process.env.FRONTEND_URL,
+  // origin: "*",
   credentials: true,
   optionsSuccessStatus: 204
 }
