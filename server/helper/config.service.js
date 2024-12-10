@@ -9,9 +9,9 @@ class ConfigService {
             // DB_HOST: Joi.string().required(),
             // DB_PORT: Joi.number().default(5432),
             SALT_ROUNDS: Joi.number().required(),
-            // FRONTEND_URL: Joi.string(),
-            // NODE_ENV: Joi.string().required(),
-            // PROD_FRONTEND_URL: Joi.string()
+            FRONTEND_URL: Joi.string(),
+            NODE_ENV: Joi.string().required(),
+            PROD_FRONTEND_URL: Joi.string(),
             DB_URL: Joi.string()
         }).unknown();
 
