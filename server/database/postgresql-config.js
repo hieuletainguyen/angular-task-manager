@@ -6,7 +6,7 @@ const { Pool } = pkg;
 const pool = new Pool({
     connectionString: configService.get("DB_URL"),
     ssl: {
-        rejectUnauthorized: false,
+        rejectUnauthorized: false, 
     }
 })
 
