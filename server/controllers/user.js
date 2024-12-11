@@ -66,8 +66,8 @@ export const login = async (req, res) => {
         if (match) {
             const token = jwt.sign({userId: userId}, jwtSecretKey, {expiresIn: "12h"});
             client.release();
-            res.cookie("TOKENS", token, {secure: true, maxAge: 12 * 60 * 60 * 1000});
-            return res.json({message: "success"});
+            // res.cookie("TOKENS", token, {secure: true, maxAge: 12 * 60 * 60 * 1000});
+            return res.json({message: "success", token: token});
         } else {
             client.release();
             return res.json({message: "Invalid email or password"});

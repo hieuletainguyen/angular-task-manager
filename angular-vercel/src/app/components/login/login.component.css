@@ -1,0 +1,88 @@
+.cyber-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(45deg, #0a0a0a, #1a1a2e);
+  }
+  
+  .cyber-card {
+    background: rgba(16, 16, 28, 0.8);
+    border: 2px solid #00f2ff;
+    border-radius: 10px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+    animation: glow 2s infinite alternate;
+  }
+  
+  .cyber-text {
+    color: #00f2ff;
+    text-transform: uppercase;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .cyber-line {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00f2ff, transparent);
+    margin: 1rem 0;
+  }
+  
+  .cyber-input {
+    width: 93%;
+    padding: 0.8rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #00f2ff;
+    color: #fff;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+  }
+  
+  .cyber-input:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+  }
+  
+  .cyber-button {
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    border: 2px solid #00f2ff;
+    color: #00f2ff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .cyber-button:hover {
+    background: #00f2ff;
+    color: #000;
+  }
+  
+  .cyber-button.secondary {
+    border-color: #ff00ff;
+    color: #ff00ff;
+  }
+  
+  .cyber-button.secondary:hover {
+    background: #ff00ff;
+    color: #000;
+  }
+  
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+    }
+    to {
+      box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+    }
+  }

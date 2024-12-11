@@ -1,0 +1,23 @@
+<div class="admin-container">
+    <h1>Admin User Management</h1>
+    <input type="text" [(ngModel)]="searchTerm" placeholder="Search users..." class="search-bar" />
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of userAccounts | filter:searchTerm">
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <button (click)="modifyUser(user.id)">Modify</button>
+            <button (click)="deleteUser(user.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+</div>
