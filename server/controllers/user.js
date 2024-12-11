@@ -50,7 +50,7 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
     const client = await pool.connect();
 
-    client.query("SELECT * FROM account WHERE email = $1;", [email], (err, result) => {
+    client.query("SELECT * FROM account WHERE email = $1;", [email], async (err, result) => {
         if (err) {
             client.release();
             return res.json({message: "Error during searching " + err.message})
@@ -61,7 +61,7 @@ export const login = async (req, res) => {
         }
         const hashPassword = result.rows[0].password;
         const userId = result.rows[0].id;
-        const match = bcrypt.compare(password, hashPassword);
+        const match = await bcrypt.compare(password, hashPassword);
 
         if (match) {
             const token = jwt.sign({userId: userId}, jwtSecretKey, {expiresIn: "12h"});
