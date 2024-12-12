@@ -16,7 +16,8 @@ var corsOptions = {
    : configService.get('FRONTEND_URL'),
   // origin: "*",
   credentials: true,
-  optionsSuccessStatus: 204
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'Authorization']
 }
 
 
