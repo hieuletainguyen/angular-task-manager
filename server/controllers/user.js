@@ -82,7 +82,7 @@ export const logout = (req, res) => {
 }
 
 export const decodeToken = async (req, res) => {
-    const token = req.cookies?.TOKENS;
+    const token = req.headers['Authorization'];
 
     if (!token) {
         return res.status(401).json({ message: "No token provided" });
@@ -101,7 +101,7 @@ export const decodeToken = async (req, res) => {
 
 
 export const getAccounts = async (req, res) => {
-    const token = req.cookie?.TOKENS;
+    const token = req.headers['Authorization'];
     const client = await pool.connect();
 
     if (!client) {
@@ -132,7 +132,7 @@ export const getAccounts = async (req, res) => {
 }
 
 export const modifyAccount = async (req, res) => {
-    const token = req.cookie?.TOKENS;
+    const token = req.headers['Authorization'];
     const {username, password, email } = req.body;
     const client = await pool.connect();
 
@@ -174,7 +174,7 @@ export const modifyAccount = async (req, res) => {
 }
 
 export const deleteUser = async (req, res) => {
-    const token = req.cookie?.TOKENS;
+    const token = req.headers['Authorization'];
     const { accounts } = req.body; // Ex: accounts = [1, 2, 3]
     const client = await pool.connect();
 

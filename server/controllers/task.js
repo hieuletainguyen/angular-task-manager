@@ -5,7 +5,7 @@ import { decodeAndGetUser } from "../helper/helper.js";
 const jwtSecretKey = configService.get["JWT_SECRET_KEY"]
 
 export const addTask = async (req, res) => {
-    const token = req.cookies?.TOKENS;
+    const token = req.headers['Authorization'];
     const { title, description, isCompleted, priority, dueDate } = req.body;
     const client = await pool.connect();
 
@@ -31,7 +31,7 @@ export const addTask = async (req, res) => {
 }
 
 export const getTasks = async (req, res) => {
-    const token = req.cookies?.TOKENS;
+    const token = req.headers['Authorization'];
     const client = await pool.connect();
 
     if (!client) {
@@ -60,7 +60,7 @@ export const getTasks = async (req, res) => {
 }
 
 export const getTask = async (req, res) => {
-    const token = req.cookies?.TOKENS;
+    const token = req.headers['Authorization'];
     const taskId  = req.params["id"];
     const client = await pool.connect();
 
@@ -90,7 +90,7 @@ export const getTask = async (req, res) => {
 }
 
 export const modifyTask = async (req, res) => {
-    const token = req.cookies?.TOKENS;
+    const token = req.headers['Authorization'];
     const taskId  = req.params["id"];
     const {isCompleted, priority, dueDate, description, title} = req.body;
     console.log(req.body)
@@ -138,7 +138,7 @@ export const modifyTask = async (req, res) => {
 }
 
 export const deleteTask = async (req, res) => {
-    const token = req.cookies?.TOKENS;
+    const token = req.headers['Authorization'];
     const taskId  = req.params["id"];
     console.log("task id: ", taskId);
     const client = await pool.connect();
