@@ -32,6 +32,7 @@ export const addTask = async (req, res) => {
 
 export const getTasks = async (req, res) => {
     const token = req.headers['Authorization'];
+    console.log("Token: ", token)
     const client = await pool.connect();
 
     if (!client) {
