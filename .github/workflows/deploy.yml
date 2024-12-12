@@ -4,9 +4,9 @@ on:
     branches:
       - main
 
-# jobs:
-#   build-and-deploy:
-#     runs-on: ubuntu-latest
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
 #     steps:
 #       # Checkout code
@@ -21,7 +21,7 @@ on:
 
 #       # Install dependencies and build frontend
 #       - name: Install and build client
-#         working-directory: client
+#         working-directory: angular-task-manager-client
 #         run: |
 #           npm install
 #           npm run build
