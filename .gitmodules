@@ -1,0 +1,3 @@
+[submodule "angular-task-manager-client"]
+	path = angular-task-manager-client
+	url = git@github.com:hieuletainguyen/angular-task-manager-client.git
