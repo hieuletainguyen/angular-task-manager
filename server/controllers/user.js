@@ -138,7 +138,7 @@ export const modifyAccount = async (req, res) => {
 
     if (!client) {
         return res.status(500).json({ message: "Database connection is not established." });
-    }
+    } 
 
     if (!token) {
         return res.status(401).json({ message: "No token provided" });
