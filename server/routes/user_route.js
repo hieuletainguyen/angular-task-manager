@@ -28,7 +28,7 @@ router.put("/user/account",
 router.get("/user/decode-token", 
     user.decodeToken
 );
-
+ 
 router.get("/user/get-accounts",
     user.getAccounts
 )
