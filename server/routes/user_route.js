@@ -23,7 +23,7 @@ router.post("/user/logout",
 
 router.put("/user/account", 
     user.modifyAccount
-)
+) 
 
 router.get("/user/decode-token", 
     user.decodeToken
