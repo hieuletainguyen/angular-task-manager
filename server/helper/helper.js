@@ -11,7 +11,7 @@ export const decodeAndGetUser = async (token) => {
             if (err.name === "TokenExpiredError" ) {
                 return { message: "Token Expired"};
             }
-            return { message: "Invalid Token" };
+            return { message: "Invalid  Token" };
         }
         return {message: "success", result: decoded};
     })
@@ -23,4 +23,12 @@ export const decodeAndGetUser = async (token) => {
     } else {
         return user
     }
+}
+
+export const numberOfTasks = async (userId) => {
+    const client = await pool.connect();
+    const completedTasks = await client.query(`SELECT COUNT(*) FROM tasks WHERE "userId" = $1 AND "isCompleted" = TRUE;`, [userId]);
+    const incompletedTasks = await client.query(`SELECT COUNT(*) FROM tasks WHERE "userId" = $1 AND "isCompleted" = FALSE;`, [userId]);
+    client.release();
+    return { completed: completedTasks.rows[0].count, incompleted: incompletedTasks.rows[0].count }
 }

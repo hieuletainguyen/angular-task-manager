@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import dotenv from "dotenv";
 import jwt from 'jsonwebtoken';
 import configService from "../helper/config.service.js";
-import { decodeAndGetUser } from "../helper/helper.js";
+import { decodeAndGetUser, numberOfTasks } from "../helper/helper.js";
 
 dotenv.config();
 
@@ -61,10 +61,11 @@ export const login = async (req, res) => {
         }
         const hashPassword = result.rows[0].password;
         const userId = result.rows[0].id;
+        const permission = result.rows[0].permission;
         const match = await bcrypt.compare(password, hashPassword);
 
         if (match) {
-            const token = jwt.sign({userId: userId}, jwtSecretKey, {expiresIn: "12h"});
+            const token = jwt.sign({userId: userId, permission: permission }, jwtSecretKey, {expiresIn: "12h"});
             client.release();
             // res.cookie("TOKENS", token, {secure: true, maxAge: 12 * 60 * 60 * 1000});
             return res.json({message: "success", token: token});
@@ -95,7 +96,7 @@ export const decodeToken = async (req, res) => {
             }
             return res.json({ message: "Invalid Token" });
         }
-        return res.status(200).json({ message: "sucess", userId: decoded.userId});
+        return res.status(200).json({ message: "success", userId: decoded.userId, permission: decoded.permission});
     });
 }
 
@@ -116,18 +117,22 @@ export const getAccounts = async (req, res) => {
 
     if (user.message !== "success") return res.status(400).json(user);
 
-    console.log("user: ", user);
     if (user.result.permission !== "admin") {
         return res.status(401).json({ message: "You are not authorized"})
     }
 
-    client.query("SELECT * FROM account;", (err, result) => {
+    client.query("SELECT * FROM account WHERE permission = 'basic';", async (err, result) => {
         if (err) {
             client.release();
             return res.status(500).json({ message: "Error: " + err.message});
         }
         client.release();
-        return res.json({ message: "success", result: result.rows})
+        const newResult = []
+        for (const account of result.rows ) {
+            const resultNumberOfTasks = await numberOfTasks(account.id);
+            newResult.push({ ...account, ...resultNumberOfTasks})
+        }
+        return res.json({ message: "success", result: newResult})
     })
 }
 

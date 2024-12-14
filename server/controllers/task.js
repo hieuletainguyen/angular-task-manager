@@ -32,8 +32,6 @@ export const addTask = async (req, res) => {
 
 export const getTasks = async (req, res) => {
     const token = req.headers['authorization'];
-    console.log("req headers: ", req.headers)
-    console.log("Token: ", token)
     const client = await pool.connect();
 
     if (!client) {
@@ -95,7 +93,6 @@ export const modifyTask = async (req, res) => {
     const token = req.headers['authorization'];
     const taskId  = req.params["id"];
     const {isCompleted, priority, dueDate, description, title} = req.body;
-    console.log(req.body)
     const client = await pool.connect();
 
     if (!client) {
@@ -124,8 +121,6 @@ export const modifyTask = async (req, res) => {
     }
 
     const setClause = keys.map((key, index) => `"${key}" = $${index + 1}`).join(', ');
-    console.log(setClause)
-    console.log(values)
     client.query(`UPDATE tasks SET ${setClause} WHERE id = ${taskId} AND "userId" = $${keys.length+1} RETURNING *;`,
         [...values, user.result.userId],
         (err, result) => {
@@ -142,7 +137,6 @@ export const modifyTask = async (req, res) => {
 export const deleteTask = async (req, res) => {
     const token = req.headers['authorization'];
     const taskId  = req.params["id"];
-    console.log("task id: ", taskId);
     const client = await pool.connect();
 
     if (!client) {
