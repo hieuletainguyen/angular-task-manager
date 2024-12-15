@@ -5,7 +5,10 @@ import express from "express";
 import pool from "./database/postgresql-config.js";
 import task_route from "./routes/task_route.js";
 import user_route from "./routes/user_route.js";
+import admin_route from "./routes/admin_route.js"
 import configService from "./helper/config.service.js";
+import swaggerSpec from "./swagger.js";
+import swaggerUI from 'swagger-ui-express';
 
 const app = express();
 const port = 9897;
@@ -27,6 +30,8 @@ app.options('*', cors(corsOptions))
 app.use(cookieParser());
 app.use(task_route);
 app.use(user_route);
+app.use(admin_route);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec))
 
 const createTableIfNotExists = async() => {
   const client = await pool.connect();
