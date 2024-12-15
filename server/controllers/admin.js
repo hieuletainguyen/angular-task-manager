@@ -1,6 +1,56 @@
 import { decodeAndGetUser, numberOfTasks } from "../helper/helper.js";
 import pool from "../database/postgresql-config.js"
+import configService from "../helper/config.service.js";
+import bcrypt from 'bcrypt';
 
+export const createAccount = async (req, res) => {
+    const token = req.headers['authorization'];
+    const { username, email, password, permission } = req.body;
+    const client = await pool.connect();
+
+    if (!client) {
+        return res.status(500).json({ message: "Database connection is not established." });
+    }
+
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+
+    client.query("SELECT * FROM account WHERE email = $1;", [email], (err, result) => {
+        if (err) {
+            client.release();
+            return res.json({message: "Error during searching " + err.message})
+        }
+        if (result.rows.length > 0) {
+            client.release();
+            return res.json({ message: "The email is already registered!"})
+        }
+    });
+
+    const user = await decodeAndGetUser(token);
+
+    if (user.message !== "success") return res.status(400).json(user);
+
+    if (user.result.permission !== "admin") {
+        return res.status(401).json({ message: "You are not authorized"})
+    }
+
+    const saltRounds = parseInt(configService.get['SALT_ROUNDS'])
+    const new_salt = await bcrypt.genSalt(saltRounds);
+    const hashPassword = await bcrypt.hash(password, new_salt);
+
+    client.query("INSERT INTO account (username, email, password, permission) VALUES ($1, $2, $3, $4) RETURNING *;",
+        [username, email, hashPassword, permission], 
+        (err, result) => {
+            if (err) {
+                client.release();
+                return res.status(500).json({message: "Error during adding " + err.message})
+            }
+            client.release();
+            return res.status(201).json({ message: "success", result: result.rows})
+        }
+    )
+}
 
 export const getAccounts = async (req, res) => {
     const token = req.headers['authorization'];

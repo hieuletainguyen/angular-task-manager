@@ -10,8 +10,62 @@ const router = Router();
  *      post:
  *          summary: Register a new user
  *          tags: 
- *          - User
- * 
+ *          - Admin
+ *          requestBody: 
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema: 
+ *                          type: object
+ *                          required:
+ *                              - username
+ *                              - email
+ *                              - password
+ *                              - permission
+ *                          properties:
+ *                              username:
+ *                                  type: string
+ *                                  description: The username of the new user assigned by admin
+ *                              email:
+ *                                  type: string
+ *                                  description: The email of the new user assigned by admin
+ *                              password:
+ *                                  type: string
+ *                                  description: The password for the new user assigned by admin
+ *                              permission:
+ *                                  type: string
+ *                                  description: The permission for the new user assigned by admin
+ *                      example:
+ *                          username: "john_doe"
+ *                          email: "john.doe@gmail.com"
+ *                          password: "securepassword123"
+ *                          permission: "admin"
+ *          responses:
+ *              201:
+ *                  description: Successful response
+ *                  content:
+ *                      application/json:
+ *                          example: 
+ *                              message: "success"
+ *              500: 
+ *                  description: Server error (database not established)
+ */
+
+router.post("/admin/create-account", 
+    body("email").not().isEmpty().escape(),
+    body("username").not().isEmpty().escape(), 
+    body("password").not().isEmpty().escape(), 
+    body("permission").not().isEmpty().escape(),
+    admin.createAccount
+)
+
+/**
+ *  @swagger
+ *  /user/register-user:
+ *      get:
+ *          summary: Register a new user
+ *          tags: 
+ *          - Admin
  *          responses:
  *              200:
  *                  description: Successful response
@@ -27,10 +81,10 @@ router.get("/admin/get-accounts",
 /**
  *  @swagger
  *  /user/register-user:
- *      post:
+ *      put:
  *          summary: Register a new user
  *          tags: 
- *          - User
+ *          - Admin
  *          requestBody: 
  *              required: true
  *              content:
@@ -71,10 +125,10 @@ router.put("/admin/update-account",
 /**
  *  @swagger
  *  /user/register-user:
- *      post:
+ *      delete:
  *          summary: Register a new user
  *          tags: 
- *          - User
+ *          - Admin
  *          requestBody: 
  *              required: true
  *              content:
