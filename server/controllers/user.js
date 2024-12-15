@@ -1,10 +1,7 @@
 import pool from "../database/postgresql-config.js"
 import bcrypt from 'bcrypt';
-import dotenv from "dotenv";
 import jwt from 'jsonwebtoken';
 import configService from "../helper/config.service.js";
-
-dotenv.config();
 
 const jwtSecretKey = configService.get('JWT_SECRET_KEY');
 
