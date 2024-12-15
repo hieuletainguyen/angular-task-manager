@@ -16,16 +16,12 @@ export const createAccount = async (req, res) => {
         return res.status(401).json({ message: "No token provided" });
     }
 
-    client.query("SELECT * FROM account WHERE email = $1;", [email], (err, result) => {
-        if (err) {
-            client.release();
-            return res.json({message: "Error during searching " + err.message})
-        }
-        if (result.rows.length > 0) {
-            client.release();
-            return res.json({ message: "The email is already registered!"})
-        }
-    });
+    const resultAlreadyCreatedAccount = await client.query("SELECT * FROM account WHERE email = $1;", [email])
+
+    if (resultAlreadyCreatedAccount.rows.length > 0) {
+        client.release();
+        return res.json({ message: "The email is already registered!"})
+    }
 
     const user = await decodeAndGetUser(token);
 
@@ -95,6 +91,13 @@ export const modifyAccount = async (req, res) => {
     if (!client) {
         return res.status(500).json({ message: "Database connection is not established." });
     } 
+
+    const resultAlreadyCreatedAccount = await client.query("SELECT * FROM account WHERE email = $1;", [email])
+    if (resultAlreadyCreatedAccount.rowCount === 1 && resultAlreadyCreatedAccount.rows[0].id != id) {
+        client.release();
+        return res.json({ message: "The email is already registered!"})
+    }
+        
 
     if (!token) {
         return res.status(401).json({ message: "No token provided" });
