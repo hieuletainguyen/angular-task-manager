@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt';
 import dotenv from "dotenv";
 import jwt from 'jsonwebtoken';
 import configService from "../helper/config.service.js";
-import { decodeAndGetUser, numberOfTasks } from "../helper/helper.js";
 
 dotenv.config();
 
@@ -50,14 +49,18 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
     const client = await pool.connect();
 
+    if (!client) {
+        return res.status(500).json({ message: "Database connection is not established." });
+    }
+
     client.query("SELECT * FROM account WHERE email = $1;", [email], async (err, result) => {
         if (err) {
             client.release();
-            return res.json({message: "Error during searching " + err.message})
+            return res.status(500).json({message: "Error during searching " + err.message})
         }
         if (result.rows.length === 0) {
             client.release();
-            return res.json({ message: "You need to register first!"});
+            return res.status(404).json({ message: "You need to register first!"});
         }
         const hashPassword = result.rows[0].password;
         const userId = result.rows[0].id;
@@ -68,10 +71,10 @@ export const login = async (req, res) => {
             const token = jwt.sign({userId: userId, permission: permission }, jwtSecretKey, {expiresIn: "12h"});
             client.release();
             // res.cookie("TOKENS", token, {secure: true, maxAge: 12 * 60 * 60 * 1000});
-            return res.json({message: "success", token: token});
+            return res.status(200).json({message: "success", token: token});
         } else {
             client.release();
-            return res.json({message: "Invalid email or password"});
+            return res.status(401).json({message: "Invalid email or password"});
         }
     })
 }
@@ -92,122 +95,13 @@ export const decodeToken = async (req, res) => {
     jwt.verify(token, jwtSecretKey, async (err, decoded) => {
         if (err) {
             if (err.name === "TokenExpiredError" ) {
-                return res.json({ message: "Token Expired"});
+                return res.status(401).json({ message: "Token Expired"});
             }
-            return res.json({ message: "Invalid Token" });
+            return res.status(403).json({ message: "Invalid Token" });
         }
         return res.status(200).json({ message: "success", userId: decoded.userId, permission: decoded.permission});
     });
 }
 
 
-export const getAccounts = async (req, res) => {
-    const token = req.headers['authorization'];
-    const client = await pool.connect();
 
-    if (!client) {
-        return res.status(500).json({ message: "Database connection is not established." });
-    }
-
-    if (!token) {
-        return res.status(401).json({ message: "No token provided" });
-    }
-
-    const user = await decodeAndGetUser(token);
-
-    if (user.message !== "success") return res.status(400).json(user);
-
-    if (user.result.permission !== "admin") {
-        return res.status(401).json({ message: "You are not authorized"})
-    }
-
-    client.query("SELECT * FROM account WHERE permission = 'basic';", async (err, result) => {
-        if (err) {
-            client.release();
-            return res.status(500).json({ message: "Error: " + err.message});
-        }
-        client.release();
-        const newResult = []
-        for (const account of result.rows ) {
-            const resultNumberOfTasks = await numberOfTasks(account.id);
-            newResult.push({ ...account, ...resultNumberOfTasks})
-        }
-        return res.json({ message: "success", result: newResult})
-    })
-}
-
-export const modifyAccount = async (req, res) => {
-    const token = req.headers['authorization'];
-    const {username, password, email } = req.body;
-    const client = await pool.connect();
-
-    if (!client) {
-        return res.status(500).json({ message: "Database connection is not established." });
-    } 
-
-    if (!token) {
-        return res.status(401).json({ message: "No token provided" });
-    }
-
-    const user = await decodeAndGetUser(token);
-
-    if (user.message !== "success") return res.status(400).json(user);
-
-    const fieldsToUpdate = {};
-    if (username) fieldsToUpdate.username = username;
-    if (password) fieldsToUpdate.password = password;
-    if (email) fieldsToUpdate.email = email;
-
-    const keys = Object.keys(fieldsToUpdate);
-    if (keys.length === 0) {
-        return res.status(400).send('No valid fields to update');
-    }
-
-    const setClause = keys.map((key, index) => `"${key}" = $${index + 1}`).join(', ');
-    const values = Object.values(fieldsToUpdate);
-
-    const query = `UPDATE account SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *;`;
-
-    client.query(query, [...values, user.result.userId], (err, result) => {
-        if (err) {
-            client.release();
-            return res.status(500).json({ message: "Error while updating info. " + err.message });
-        }
-        client.release();
-        return res.json({ message: "success", result: result.rows });
-    })
-}
-
-export const deleteUser = async (req, res) => {
-    const token = req.headers['authorization'];
-    const { accounts } = req.body; // Ex: accounts = [1, 2, 3]
-    const client = await pool.connect();
-
-    if (!client) {
-        return res.status(500).json({ message: "Database connection is not established." });
-    }
-
-    if (!token) {
-        return res.status(401).json({ message: "No token provided" });
-    }
-
-    const user = await decodeAndGetUser(token);
-
-    if (user.message !== "success") return res.status(400).json(user);
-
-    if (user.result.permission !== "admin") {
-        return res.status(401).json({ message: "You are not authorized"})
-    }
-
-    const placeholder = accounts.map((_, index) => `$${index+1}`).join(',');
-    const query = `DELETE FROM users WHERE id IN (${placeholder}) RETURNING *;`;
-
-    client.query(query, accounts, async (err, result) => {
-        if (err) {
-            client.release();
-            return res.status(500).json({ message: "Error while deleting info. " + err.message });
-        }
-        client.release();
-        return res.json({ message: "success", result: result.rows });
-    })
-}
