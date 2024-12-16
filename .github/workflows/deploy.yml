@@ -1,0 +1,49 @@
+name: CI/CD Pipeline
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+#     steps:
+#       # Checkout code
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+
+#       # Setup Node.js
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 22
+
+#       # Install dependencies and build frontend
+#       - name: Install and build client
+#         working-directory: angular-task-manager-client
+#         run: |
+#           npm install
+#           npm run build
+
+      # Deploy frontend to Vercel
+    #   - name: Deploy frontend to Vercel
+    #     run: vercel --prod --cwd . --yes --token=${{ secrets.VERCEL_TOKEN }}
+
+      # Install dependencies and deploy backend
+    #   - name: Install and deploy server
+    #     working-directory: server
+    #     env:
+    #         JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+    #         SALT_ROUNDS: ${{ secrets.SALT_ROUNDS }}
+    #         DB_USER: ${{ secrets.DB_USER }}
+    #         DB_HOST: ${{ secrets.DB_HOST }}
+    #         DB_DATABASE: ${{ secrets.DB_DATABASE }}
+    #         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    #         DB_PORT: ${{ secrets.DB_PORT }}
+    #         NODE_ENV: ${{ secrets.NODE_ENV }}
+    #         PROD_FRONTEND_URL: ${{ secrets.PROD_FRONTEND_URL }}
+    #     run: |
+    #         npm install
+    #         vercel deploy --prod --cwd . --yes --token=${{ secrets.VERCEL_TOKEN }}
+    
